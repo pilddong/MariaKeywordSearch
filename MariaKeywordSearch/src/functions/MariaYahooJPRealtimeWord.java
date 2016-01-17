@@ -83,7 +83,7 @@ public class MariaYahooJPRealtimeWord {
             query.setCount(200);	            
             //query.setLang("ko");
 
-            int repeat = 10;
+            int repeat = 3;
 
             QueryResult result;
 
@@ -220,8 +220,10 @@ public class MariaYahooJPRealtimeWord {
     			while(s.contains("https://t.co/")) {
 
         			int i = s.indexOf("https://t.co/");
+        			int last_char = i + 23;
+        			if(s.length() <= (i+23)) last_char = s.length()-1;
 
-        			s = s.replace(s.substring(i, i+23), "");
+        			s = s.replace(s.substring(i, last_char), "");
 
         			
         		}

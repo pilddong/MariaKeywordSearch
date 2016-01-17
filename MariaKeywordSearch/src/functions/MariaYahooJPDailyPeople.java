@@ -2,6 +2,7 @@ package functions;
 import java.awt.Robot;
 import java.io.BufferedReader;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class MariaYahooJPDailyPeople {
             query.setCount(200);	            
             //query.setLang("ko");
 
-            int repeat = 10;
+            int repeat = 3;
 
             QueryResult result;
 
@@ -112,7 +113,7 @@ public class MariaYahooJPDailyPeople {
         		}
         		
         		
-        		System.out.println(s);
+        		//System.out.println(s);
             }
             
             for (Status tweet : tweets) {
@@ -217,13 +218,17 @@ public class MariaYahooJPDailyPeople {
     			while(s.contains("https://t.co/")) {
 
         			int i = s.indexOf("https://t.co/");
+        			int last_char = i + 23;
+        			if(s.length() <= (i+23)) last_char = s.length()-1;
 
-        			s = s.replace(s.substring(i, i+23), "");
+        			s = s.replace(s.substring(i, last_char), "");
 
         			
         		}
         		
     			s = remove_comma(s);
+    			
+    			//s = new String(s.getBytes());
     			
     			tistory_content = tistory_content + "<tr><td width=\"60\" align=\"center\" style=\"border: 1px solid rgb(204, 204, 204); font-size: 10px; padding: 1px;\">";
     			tistory_content = tistory_content + "<a href=\"https://twitter.com/" + (String)tweet.getUser().getScreenName() + "\" target=\"_blank\" title=\"" + tweet.getUser().getScreenName() + "\"> ";
@@ -274,7 +279,8 @@ public class MariaYahooJPDailyPeople {
 			TistoryClient TC = new TistoryClient();
 			TistoryBrainDotsArticle tistoryBrainDotsArticle = new TistoryBrainDotsArticle();
 		
-		    tistoryBrainDotsArticle.setTitle("'" + searchItem + "' " + title_side);
+		    //tistoryBrainDotsArticle.setTitle("'" + searchItem + "' " + title_side);
+			tistoryBrainDotsArticle.setTitle(searchItem);
 		    tistoryBrainDotsArticle.setContent(tistory_content + " ");
 		    tistoryBrainDotsArticle.setTag((String)tags);
 		   // tistoryBrainDotsArticle.setStrategy(list[2]);

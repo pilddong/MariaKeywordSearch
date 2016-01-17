@@ -44,7 +44,7 @@ public class MariaYahooJPRealtimePeople {
 
         Document doc = Jsoup.connect( pageUrl ).get(); 
   
-        System.out.println(doc);
+        //System.out.println(doc);
         String selector="div#main > div.listRowlink > ul.patB > li > a"; // css selector
 
         Elements rcw = doc.select( selector ); 
@@ -83,7 +83,7 @@ public class MariaYahooJPRealtimePeople {
             query.setCount(200);	            
             //query.setLang("ko");
 
-            int repeat = 10;
+            int repeat = 5;
 
             QueryResult result;
 
@@ -169,8 +169,8 @@ public class MariaYahooJPRealtimePeople {
         		if (wc.word.contains(searchItem)) continue;
         		//if(filtering(wc.word)) continue;
         		if(tag_count++ < 30) tags = tags + wc.word + ",";
-        		if(tag_count < 10) title_side = title_side + wc.word + ", ";
-        		else if(tag_count == 10) title_side = title_side + wc.word;
+        		if(tag_count < 5) title_side = title_side + wc.word + " ";
+        		else if(tag_count == 5) title_side = title_side + wc.word;
         		
         		
         	}
@@ -210,8 +210,10 @@ public class MariaYahooJPRealtimePeople {
         	int item_num = 0; 
     		int photo_position = 0;
     		
+    		HashMap<String, Integer> TextDupCheckList = new HashMap<>();
+    		
     		tistory_content = tistory_content + "<div class=\"tt_article_useless_p_margin\"><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%;\"><tbody>";
-        	
+    		boolean AdCheck = false;
     		for (Status tweet : tweets) {
     			if(tweet.isRetweet() == true) continue;
 
@@ -220,13 +222,20 @@ public class MariaYahooJPRealtimePeople {
     			while(s.contains("https://t.co/")) {
 
         			int i = s.indexOf("https://t.co/");
+        			int last_char = i + 23;
+        			if(s.length() <= (i+23)) last_char = s.length()-1;
 
-        			s = s.replace(s.substring(i, i+23), "");
+        			s = s.replace(s.substring(i, last_char), "");
 
         			
         		}
         		
     			s = remove_comma(s);
+    			//s = new String(s.getBytes());
+    			
+    				 	
+    			if(TextDupCheckList.get(s) != null) continue;
+    			TextDupCheckList.put(s, 1);
     			
     			tistory_content = tistory_content + "<tr><td width=\"60\" align=\"center\" style=\"border: 1px solid rgb(204, 204, 204); font-size: 10px; padding: 1px;\">";
     			tistory_content = tistory_content + "<a href=\"https://twitter.com/" + (String)tweet.getUser().getScreenName() + "\" target=\"_blank\" title=\"" + tweet.getUser().getScreenName() + "\"> ";
@@ -237,7 +246,11 @@ public class MariaYahooJPRealtimePeople {
     			tistory_content = tistory_content + "</td> </tr>";
 
     			item_num++;
-    			if(item_num == 14) tistory_content = tistory_content + "</tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%;\"><tbody><tr><td style=\"text-align:center; padding:1px;\"><p style=\"text-align:center;\"><style>.twitsideAd { width: 336px; height: 280px; margin-top: 15px; margin-bottom: 15px; }@media(max-width: 768px) { .twitsideAd { width: 300px; height: 250px; margin-top: 15px; margin-bottom: 15px; } }</style><script async=\"\" src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script><ins class=\"adsbygoogle twitsideAd\" style=\"display:inline-block\" data-ad-client=\"ca-pub-8716569569929004\" data-ad-slot=\"6723223174\" data-ad-format=\"auto\"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></p></td></tr></tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%\"><tbody>";
+    			if(item_num == 14) {
+    				AdCheck = true;
+    				tistory_content = tistory_content + "</tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%;\"><tbody><tr><td style=\"text-align:center; padding:1px;\"><p style=\"text-align:center;\"><style>.twitsideAd { width: 336px; height: 280px; margin-top: 15px; margin-bottom: 15px; }@media(max-width: 768px) { .twitsideAd { width: 300px; height: 250px; margin-top: 15px; margin-bottom: 15px; } }</style><script async=\"\" src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script><ins class=\"adsbygoogle twitsideAd\" style=\"display:inline-block\" data-ad-client=\"ca-pub-8716569569929004\" data-ad-slot=\"6723223174\" data-ad-format=\"auto\"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></p></td></tr></tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%\"><tbody>";
+    			}
+    			
     			else if((item_num % 7) == 0){
 
     				if(photo_position < PhotoList.size()) {
@@ -255,7 +268,8 @@ public class MariaYahooJPRealtimePeople {
     			}
 	
         	}
-
+    		if(!AdCheck) tistory_content = tistory_content + "</tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%;\"><tbody><tr><td style=\"text-align:center; padding:1px;\"><p style=\"text-align:center;\"><br><br><br>Ads<br><style>.twitsideAd { width: 336px; height: 280px; margin-top: 15px; margin-bottom: 15px; }@media(max-width: 768px) { .twitsideAd { width: 300px; height: 250px; margin-top: 15px; margin-bottom: 15px; } }</style><script async=\"\" src=\"//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script><ins class=\"adsbygoogle twitsideAd\" style=\"display:inline-block\" data-ad-client=\"ca-pub-8716569569929004\" data-ad-slot=\"6723223174\" data-ad-format=\"auto\"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></p></td></tr></tbody></table><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%\"><tbody>";
+    		tistory_content = tistory_content + "</tbody></table><p><br><br><br></p><p style=\"text-align: center; clear: none; float: none;\">" + searchItem + "</p><table align=\"center\" style=\"color: rgb(0, 0, 0); font-family: 'Malgun Gothic'; border-collapse: collapse; width:100%;\"><tbody>";
     		for(int i = 0; i < 5; i++) {
 				if(photo_position < PhotoList.size()) {
 
@@ -278,6 +292,7 @@ public class MariaYahooJPRealtimePeople {
 			TistoryBrainDotsArticle tistoryBrainDotsArticle = new TistoryBrainDotsArticle();
 		
 		    tistoryBrainDotsArticle.setTitle("'" + searchItem + "' " + title_side);
+			//tistoryBrainDotsArticle.setTitle(searchItem);
 		    tistoryBrainDotsArticle.setContent(tistory_content + " ");
 		    tistoryBrainDotsArticle.setTag((String)tags);
 		   // tistoryBrainDotsArticle.setStrategy(list[2]);
@@ -289,6 +304,12 @@ public class MariaYahooJPRealtimePeople {
 		    
 		    //Thread.sleep(10000);
 		    
+		    Set_TimerOn(1);
+		    Set_TimerOn(1);
+		    Set_TimerOn(1);
+		    Set_TimerOn(1);
+		    Set_TimerOn(1);
+		    Set_TimerOn(1);
 		    Set_TimerOn(1);
 		    Set_TimerOn(1);
 		    Set_TimerOn(1);

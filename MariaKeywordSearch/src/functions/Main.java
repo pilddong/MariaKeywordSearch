@@ -7,9 +7,9 @@ public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			//MariaYahooJPDailyWord.main(args);
-			//MariaYahooJPDailyPeople.main(args);
-			//MariaYahooJPDailyFood.main(args);
+			MariaYahooJPDailyWord.main(args);
+			MariaYahooJPDailyPeople.main(args);
+			MariaYahooJPDailyFood.main(args);
 			while(true) {
 				MariaYahooJPRealtimeWord.main(args);
 				MariaYahooJPRealtimeTwit.main(args);
@@ -17,6 +17,8 @@ public class Main {
 				MariaYahooJPRealtimeVideo.main(args);
 				MariaYahooJPRealtimePeople.main(args);
 				for(int i = 0; i < 150; i++)
+				Set_TimerOn(1);
+				Set_TimerOn(1);
 				Set_TimerOn(1);
 			}
 			

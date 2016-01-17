@@ -20,7 +20,7 @@ public class Filtering {
 		}
 	}
 	
-	public static HashSet<String> filteringList() {
+	public HashSet<String> filteringList() {
         return filter;
     }
 	

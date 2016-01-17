@@ -80,7 +80,7 @@ public class MariaYahooJPDailyWord {
             query.setCount(200);	            
             //query.setLang("ko");
 
-            int repeat = 10;
+            int repeat = 3;
 
             QueryResult result;
 
@@ -217,13 +217,17 @@ public class MariaYahooJPDailyWord {
     			while(s.contains("https://t.co/")) {
 
         			int i = s.indexOf("https://t.co/");
+        			int last_char = i + 23;
+        			if(s.length() <= (i+23)) last_char = s.length()-1;
 
-        			s = s.replace(s.substring(i, i+23), "");
+        			s = s.replace(s.substring(i, last_char), "");
 
         			
         		}
         		
     			s = remove_comma(s);
+    			
+    			//s = new String(s.getBytes());
     			
     			tistory_content = tistory_content + "<tr><td width=\"60\" align=\"center\" style=\"border: 1px solid rgb(204, 204, 204); font-size: 10px; padding: 1px;\">";
     			tistory_content = tistory_content + "<a href=\"https://twitter.com/" + (String)tweet.getUser().getScreenName() + "\" target=\"_blank\" title=\"" + tweet.getUser().getScreenName() + "\"> ";
